@@ -5,7 +5,7 @@ import torchvision.transforms.v2 as T
 from torch import nn
 from torch.utils.data import DataLoader
 from MnistModel import MnistModel
-from ModelRunner import ModelRunner
+from OneCycleModelRunner import OneCycleModelRunner
 from graph_history import graph_history
 
 toTensor = T.Compose([T.ToImage(), T.ToDtype(torch.float32)])
@@ -29,7 +29,7 @@ xentropy = nn.CrossEntropyLoss()
 accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=10)
 
 print("Beginning Training")
-runner = ModelRunner(mnist_model, accuracy, optimizer, xentropy)
+runner = OneCycleModelRunner (mnist_model, accuracy, optimizer, xentropy)
 history = runner.train_model(train_loader, valid_loader, n_epochs=10)
 graph_history(history)
 print("Finished Training")
