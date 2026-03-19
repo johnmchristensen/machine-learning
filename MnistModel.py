@@ -39,10 +39,10 @@ class MnistEnsembleModel(nn.Module):
         self.ensemble_model = nn.Sequential(nn.Flatten(),
                                             nn.Linear(CLASS_COUNT * n_models, 128),
                                             nn.ReLU(),
-                                            nn.Dropout(0.25),
+                                            nn.Dropout(0.75),
                                             nn.Linear(128, 128),
                                             nn.ReLU(),
-                                            nn.Dropout(0.5),
+                                            nn.Dropout(0.75),
                                             nn.Linear(128, CLASS_COUNT))
         for m in self.ensemble_model:
             if isinstance(m, nn.Linear):
