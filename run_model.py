@@ -2,8 +2,8 @@ import torch
 import torchmetrics
 from torch import nn
 
+from ModelRunner import train_with_early_stopping
 from get_device import get_device
-from train_with_early_stopping import train_with_early_stopping
 
 
 def run_model(model, train_loader, valid_loader, learning_rate = 2e-3, n_epocs = 100):
