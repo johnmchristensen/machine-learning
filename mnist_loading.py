@@ -10,7 +10,6 @@ def standard():
 def with_image_augmentation():
     return load(T.Compose([T.ToImage(),
                            T.RandomAffine(degrees=10, translate=(0.1, 0.1), scale=(0.9, 1.1), shear=5),
-                           T.GaussianBlur(kernel_size=3, sigma=(0.1, 1.0)),
                            T.ToDtype(torch.float32, scale=True)]))
 
 def load(transformer):

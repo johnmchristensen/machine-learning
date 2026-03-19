@@ -17,8 +17,8 @@ xentropy = nn.CrossEntropyLoss()
 accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=10)
 
 print("Beginning Training")
-runner = OneCycleModelRunner (mnist_model, accuracy, optimizer, xentropy)
-history = runner.train_model(train_loader, valid_loader, n_epochs=10)
+runner = OneCycleModelRunner(mnist_model, accuracy, optimizer, xentropy)
+history = runner.train_model(train_loader, valid_loader, n_epochs=20)
 graph_history(history)
 print("Finished Training")
 
