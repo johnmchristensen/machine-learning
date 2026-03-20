@@ -3,8 +3,10 @@ import torchvision
 import torchvision.transforms.v2 as T
 from torch.utils.data import DataLoader
 
+STANDARD_TRANSFORMS = T.Compose([T.ToImage(), T.ToDtype(torch.float32, scale=True)])
+
 def standard():
-    return load(T.Compose([T.ToImage(), T.ToDtype(torch.float32, scale=True)]))
+    return load(STANDARD_TRANSFORMS)
 
 
 def with_image_augmentation():
@@ -14,7 +16,7 @@ def with_image_augmentation():
 
 def load(transformer):
     train_and_valid_data = torchvision.datasets.MNIST(root="datasets", train=True, download=True, transform=transformer)
-    test_data = torchvision.datasets.MNIST(root="datasets", train=False, download=True, transform=transformer)
+    test_data = torchvision.datasets.MNIST(root="datasets", train=False, download=True, transform=STANDARD_TRANSFORMS)
 
     torch.manual_seed(42)
     train_data, valid_data = torch.utils.data.random_split(train_and_valid_data, [55_000, 5_000])
