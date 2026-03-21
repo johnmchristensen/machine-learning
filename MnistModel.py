@@ -33,15 +33,23 @@ class MnistModel(nn.Module):
         return x
 
 class MnistEnsembleModel(nn.Module):
-    def __init__(self, n_models):
+    def __init__(self, n_models, dropout_rate = 0, inner_layer_connections = 64, inner_layer_count = 1):
         super().__init__()
         self.models = nn.ModuleList([MnistModel() for _ in range(n_models)])
-        self.ensemble_model = nn.Sequential(nn.Flatten(),
-                                            nn.Linear(CLASS_COUNT * n_models, 128),
-                                            nn.ReLU(),
-                                            nn.Linear(128, 128),
-                                            nn.ReLU(),
-                                            nn.Linear(128, CLASS_COUNT))
+
+        final_model = [nn.Flatten(),
+                        nn.Linear(CLASS_COUNT * n_models, inner_layer_connections),
+                        nn.ReLU(),
+                        nn.Dropout(dropout_rate)]
+        for i in range(inner_layer_count):
+            final_model.append(nn.Linear(inner_layer_connections, inner_layer_connections))
+            final_model.append(nn.ReLU())
+            final_model.append(nn.Dropout(dropout_rate))
+
+        final_model = final_model + [nn.Linear(inner_layer_connections, CLASS_COUNT)]
+
+        self.ensemble_model = nn.Sequential(*final_model)
+        
         for m in self.ensemble_model:
             if isinstance(m, nn.Linear):
                 nn.init.kaiming_normal_(m.weight, nonlinearity='relu')
@@ -51,3 +59,12 @@ class MnistEnsembleModel(nn.Module):
     def forward(self, x):
         model_out = [m(x) for m in self.models]
         return self.ensemble_model(torch.cat(model_out, dim=1))
+
+class MnistEnsembleAveragingModel(nn.Module):
+    def __init__(self, n_models):
+        super().__init__()
+        self.models = nn.ModuleList([MnistModel() for _ in range(n_models)])
+
+    def forward(self, x):
+        model_out = [m(x) for m in self.models]
+        return torch.stack(model_out).mean(dim=0)

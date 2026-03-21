@@ -6,7 +6,7 @@ from get_device import get_device
 from history import History
 
 
-class ModelRunner():
+class ModelRunner:
     def __init__(self, model, accuracy, optimizer=None, criterion=None, device=None):
         self.device = device if device is not None else get_device()
         self.model = model.to(self.device)
