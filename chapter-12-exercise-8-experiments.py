@@ -1,5 +1,5 @@
 from experiment_runner import run
-from MnistModel import MnistEnsembleAveragingModel, MnistEnsembleModel, CLASS_COUNT
+from MnistModel import MnistHeadlessEnsembleModel, MnistEnsembleAveragingModel, MnistEnsembleModel, CLASS_COUNT
 from torch import nn
 
 import mnist_loading
@@ -26,10 +26,19 @@ def model_selecting_builder(p):
 def model_count_builder(p):
     return MnistEnsembleModel(p)
 
+def model_headless_ensemble_dropout_rate(p):
+    return MnistHeadlessEnsembleModel(3, p)
+
 def optimizer_generator(m):
     return torch.optim.Adam(m.parameters())
 
-best_model, best_valid_metric, best_parameter_value = run(model_count_builder, optimizer_generator, [3, 5, 7],
-                                                          accuracy, train_loader, valid_loader, xentropy, n_epochs=5)
+best_model, best_valid_metric, best_parameter_value = run(model_headless_ensemble_dropout_rate,
+                                                          optimizer_generator,
+                                                          [0.25, 0.5, 0.75],
+                                                          accuracy,
+                                                          train_loader,
+                                                          valid_loader,
+                                                          xentropy,
+                                                          n_epochs=5)
 print(f"Best parameters: {best_parameter_value}")
 print(f"Best validation metric: {best_valid_metric}")
