@@ -4,54 +4,36 @@ import torch
 
 CLASS_COUNT = 10
 
-class MnistModelHeadOnly(nn.Module):
+class MnistModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.layers = nn.ModuleList([nn.Conv2d(1, 32, kernel_size=3, padding=1),
-                                     nn.BatchNorm2d(32),
-                                     nn.ReLU(),
-                                     nn.Conv2d(32, 64, kernel_size=3, padding=1),
-                                     nn.BatchNorm2d(64),
-                                     nn.ReLU(),
-                                     nn.MaxPool2d(2),
-                                     nn.Flatten()])
+        self.layers = nn.Sequential(nn.Conv2d(1, 32, kernel_size=3, padding=1),
+                    nn.BatchNorm2d(32),
+                    nn.ReLU(),
+                    nn.Conv2d(32, 64, kernel_size=3, padding=1),
+                    nn.BatchNorm2d(64),
+                    nn.ReLU(),
+                    nn.Conv2d(64, 128, kernel_size=3, padding=1),
+                    nn.BatchNorm2d(128),
+                    nn.ReLU(),
+                    nn.Conv2d(128, 256, kernel_size=3, padding=1),
+                    nn.BatchNorm2d(256),
+                    nn.ReLU(),
+                    nn.MaxPool2d(2),
+                    nn.Flatten(),
+                    nn.Dropout(0.25),
+                    nn.Linear(50176, 128),
+                    nn.BatchNorm1d(128),
+                    nn.ReLU(),
+                    nn.Dropout(0.5),
+                    nn.Linear(128, CLASS_COUNT))
+
         kaiming_normal_initialize(self.layers)
 
     def forward(self, x):
         for layer in self.layers:
             x = layer(x)
         return x
-
-
-class MnistModel(MnistModelHeadOnly):
-    def __init__(self):
-        super().__init__()
-        layers = [nn.Dropout(0.25),
-                    nn.Linear(1 * 28 * 28 * 32 // 2, 128),
-                    nn.BatchNorm1d(128),
-                    nn.ReLU(),
-                    nn.Dropout(0.5),
-                    nn.Linear(128, CLASS_COUNT)]
-
-        self.layers.extend(layers)
-        kaiming_normal_initialize(layers)
-
-class MnistHeadlessEnsembleModel(nn.Module):
-    def __init__(self, n_models, dropout_rate = 0.5):
-        super().__init__()
-        self.models = nn.ModuleList([MnistModelHeadOnly() for _ in range(n_models)])
-        kaiming_normal_initialize(self.models)
-
-        self.ensemble_model = nn.Sequential(nn.Dropout(dropout_rate / 2),
-                                        nn.Linear((28 * 28 * 32 // 2) * n_models, 128),
-                                        nn.ReLU(),
-                                        nn.Dropout(dropout_rate),
-                                        nn.Linear(128, CLASS_COUNT))
-        kaiming_normal_initialize(self.ensemble_model)
-
-    def forward(self, x):
-        model_out = [m(x) for m in self.models]
-        return self.ensemble_model(torch.cat(model_out, dim=1))
 
 class MnistEnsembleModel(nn.Module):
     def __init__(self, n_models, dropout_rate = 0, inner_layer_connections = 64, inner_layer_count = 1):

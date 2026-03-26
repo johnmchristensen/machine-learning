@@ -1,4 +1,4 @@
-from MnistModel import MnistHeadlessEnsembleModel, CLASS_COUNT
+from MnistModel import CLASS_COUNT, MnistModel
 from ModelRunner import OneCycleModelRunner
 from graph_history import graph_history
 from torch import nn
@@ -15,7 +15,7 @@ torch.manual_seed(42)
 xentropy = nn.CrossEntropyLoss()
 accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=CLASS_COUNT)
 
-mnist_model = MnistHeadlessEnsembleModel(3, dropout_rate=0)
+mnist_model = MnistModel()
 optimizer = torch.optim.Adam(mnist_model.parameters())
 
 print("Beginning Training")
