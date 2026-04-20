@@ -1,5 +1,5 @@
 from experiment_runner import run
-from MnistModel import MnistHeadlessEnsembleModel, MnistEnsembleAveragingModel, MnistEnsembleModel, CLASS_COUNT
+from models.MnistModel import MnistHeadlessEnsembleModel, MnistEnsembleAveragingModel, MnistEnsembleModel, CLASS_COUNT
 from torch import nn
 
 import mnist_loading

@@ -1,5 +1,5 @@
-from MnistModel import CLASS_COUNT, MnistModel
-from ModelRunner import OneCycleModelRunner
+from models.MnistModel import CLASS_COUNT, MnistModel
+from model_runner.ModelRunner import OneCycleModelRunner
 from graph_history import graph_history
 from torch import nn
 
@@ -24,4 +24,4 @@ history = runner.train_model(train_loader, valid_loader, n_epochs=10)
 graph_history(history)
 print("Finished Training")
 
-print(runner.run_model(test_loader))
+print(runner.test_model(test_loader))

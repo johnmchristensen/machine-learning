@@ -2,7 +2,7 @@ import torch
 import torchmetrics
 from torch import nn
 
-from ModelRunner import train_with_early_stopping
+from model_runner.ModelRunner import train_with_early_stopping
 from get_device import get_device
 
 

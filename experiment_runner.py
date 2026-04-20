@@ -1,4 +1,4 @@
-from ModelRunner import ModelRunner
+from model_runner.ModelRunner import ModelRunner
 
 
 def run(model_generator, optimizer_generator, params, accuracy, train_loader, valid_loader,
