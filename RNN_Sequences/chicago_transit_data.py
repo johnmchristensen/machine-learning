@@ -4,7 +4,7 @@ import tarfile
 import urllib.request
 
 RIDERSHIP_URL = "https://github.com/ageron/data/raw/main/ridership.tgz"
-DEFAULT_TARGET_PATH = "datasets"
+DEFAULT_TARGET_PATH = "../datasets"
 
 def download_and_extract_ridership_data(target_path = DEFAULT_TARGET_PATH, url = RIDERSHIP_URL):
     tarball_path = Path(target_path + "/ridership.tgz")
@@ -18,6 +18,8 @@ def load_ridership_data(target_path = DEFAULT_TARGET_PATH):
     path = Path(target_path + "/ridership/CTA_-_Ridership_-_Daily_Boarding_Totals.csv")
     df = pd.read_csv(path, parse_dates=["service_date"])
     df.columns = ["date", "day_type", "bus", "rail", "total"]  # shorter names
+    df["bus"] = pd.to_numeric(df["bus"].str.replace(",", ""))
+    df["rail"] = pd.to_numeric(df["rail"].str.replace(",", ""))
     df = df.sort_values("date").set_index("date")
     df = df.drop("total", axis=1)  # no need for total, it's just bus + rail
     df = df.drop_duplicates()  # remove duplicated months (2011-10 and 2014-07)

@@ -40,15 +40,18 @@ class ModelRunner:
         self.model.load_state_dict(torch.load(checkpoint_path))
         return history
 
-    def test_model(self, data_loader):
+    def test_model(self, data_loader, metric=None):
+        metric = metric.to(self.device) if metric is not None else self.metric
+
         self.model.eval()
-        self.metric.reset()
+        metric.reset()
         with torch.no_grad():
             for X_batch, y_batch in data_loader:
                 X_batch, y_batch = X_batch.to(self.device), y_batch.to(self.device)
                 y_pred = self.model(X_batch)
-                self.metric.update(y_pred, y_batch)
-        return self.metric.compute()
+                metric.update(y_pred, y_batch)
+
+        return metric.compute()
     
     def run_model(self, data_loader):
         self.model.eval()
