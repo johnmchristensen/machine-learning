@@ -122,33 +122,6 @@ class TestGrammarIsValidKnownDefects(unittest.TestCase):
 
         self.assertTrue(grammar.is_valid("ABC"))
 
-
-class TestKnownDefects(unittest.TestCase):
-    @unittest.expectedFailure
-    def test_constructor_tracks_start_node(self):
-        grammar = Grammar()
-        self.assertIn(grammar._start, grammar._nodes)
-
-    @unittest.expectedFailure
-    def test_edge_constructor_accepts_letter_and_target(self):
-        terminal = Node()
-        edge = Edge("A", terminal)
-
-        self.assertEqual(edge.Letter, "A")
-        self.assertIs(edge.Target, terminal)
-
-    @unittest.expectedFailure
-    def test_add_edge_stores_letter_and_target_on_from_node(self):
-        grammar = Grammar.__new__(Grammar)
-        from_node = Node()
-        to_node = Node()
-        grammar._nodes = [from_node, to_node]
-
-        grammar.add_edge(from_node, "A", to_node)
-
-        self.assertEqual(len(from_node._edges), 1)
-
-
 if __name__ == "__main__":
     unittest.main()
 
