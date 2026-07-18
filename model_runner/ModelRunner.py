@@ -63,7 +63,7 @@ class ModelRunner:
         return torch.cat(y_pred)
 
     def __train_batch(self, loader):
-        device = get_device()
+        device = self.device
         total_loss = 0.0
         for X_batch, y_batch in loader:
             X_batch, y_batch = X_batch.to(device), y_batch.to(device)
